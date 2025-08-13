@@ -86,10 +86,7 @@ git push -u origin main
 
 ---
 
-## 💌 Author
 
-**Name:** \[Your Name]
-**GitHub:** \[Your GitHub Profile Link]
-**Date Completed:** \[Date]
+
 
 
