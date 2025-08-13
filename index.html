@@ -1,0 +1,680 @@
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust Adventures</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7fafc;
+        }
+        .hero-section {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1506197603052-3ac93a311b17?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        /* Custom styles for image fallbacks */
+        .destination-card-img {
+            min-height: 200px;
+        }
+        .destination-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* Style for the placeholder text to make it more distinct */
+        input::placeholder {
+            color: #9ca3af; /* Tailwind's gray-400 */
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Booking Confirmation Modal -->
+    <div id="confirmation-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 overflow-y-auto h-full w-full z-[100]" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white text-center">
+            <div class="mt-3">
+                <i class="fa-solid fa-check-circle text-6xl text-green-500"></i>
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4" id="modal-title">Booking Confirmed!</h3>
+                <div class="mt-2 px-7 py-3">
+                    <p class="text-sm text-gray-500">
+                        Your booking request has been successfully submitted. We will contact you shortly with the details.
+                    </p>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="close-confirmation-button" class="px-4 py-2 bg-indigo-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Options Modal -->
+    <div id="booking-options-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 overflow-y-auto h-full w-full z-[100]" aria-labelledby="booking-options-title" role="dialog" aria-modal="true">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white text-center">
+            <div class="mt-3">
+                <h3 class="text-xl leading-6 font-medium text-gray-900" id="booking-options-title">You've Selected an Option</h3>
+                <p class="text-sm text-gray-500 mt-2">What would you like to do next?</p>
+                <div class="mt-4 px-7 py-3 flex flex-col space-y-4">
+                    <button id="view-details-button" class="px-4 py-2 border border-indigo-600 text-indigo-600 text-base font-medium rounded-md w-full shadow-sm hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        View Details
+                    </button>
+                    <button id="proceed-to-book-button" class="px-4 py-2 bg-indigo-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        Book Now
+                    </button>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="close-options-button" class="px-4 py-2 text-gray-500 text-base font-medium rounded-md w-full hover:bg-gray-100">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Details Modal -->
+    <div id="view-details-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 overflow-y-auto h-full w-full z-[100]" aria-labelledby="view-details-title" role="dialog" aria-modal="true">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900" id="view-details-title">Details for Your Selection</h3>
+                <!-- The content below will be dynamically inserted by JavaScript -->
+                <div id="details-content" class="mt-4 text-left">
+                    <!-- Dynamic content will go here -->
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="book-from-details-button" class="px-4 py-2 bg-indigo-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        Book This Option
+                    </button>
+                    <button id="close-details-button" class="mt-2 px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between flex-wrap">
+            <a href="#" class="flex items-center text-xl font-bold text-indigo-600">
+                <i class="fa-solid fa-plane-departure text-2xl mr-2"></i>
+                Wanderlust
+            </a>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <i class="fa-solid fa-bars text-2xl text-gray-700"></i>
+            </button>
+
+            <!-- Navigation Links -->
+            <div id="nav-menu" class="hidden md:flex flex-col md:flex-row items-center w-full md:w-auto mt-4 md:mt-0 space-y-4 md:space-y-0 md:space-x-8">
+                <a href="#hero-section" class="text-gray-600 hover:text-indigo-600 transition-colors duration-300 font-medium">Home</a>
+                <a href="#popular-destinations" class="text-gray-600 hover:text-indigo-600 transition-colors duration-300 font-medium">Destinations</a>
+                <a href="#search-form" class="text-gray-600 hover:text-indigo-600 transition-colors duration-300 font-medium">Tours</a>
+                <a href="#why-choose-us" class="text-gray-600 hover:text-indigo-600 transition-colors duration-300 font-medium">About Us</a>
+                <a href="#contact-info" class="text-gray-600 hover:text-indigo-600 transition-colors duration-300 font-medium">Contact</a>
+                <button id="book-now-button" class="bg-indigo-600 text-white font-medium py-2 px-6 rounded-full hover:bg-indigo-700 transition-colors duration-300 shadow-md">
+                    Book Now
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero-section" class="hero-section h-screen flex flex-col items-center justify-center text-white text-center p-4">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+            Discover Your Next Adventure
+        </h1>
+        <p class="mt-4 text-lg sm:text-xl font-light max-w-2xl">
+            From serene beaches to majestic mountains, find your perfect getaway with us.
+        </p>
+
+        <!-- Search Form -->
+        <div id="search-form-container" class="bg-white bg-opacity-90 rounded-xl shadow-lg mt-8 p-6 w-full max-w-4xl">
+            <!-- Tabs -->
+            <div class="flex border-b border-gray-200">
+                <button class="tab-button flex-1 text-center py-4 px-2 text-gray-600 hover:bg-gray-100 rounded-t-lg transition-colors duration-300 font-semibold text-lg" data-tab="flights">
+                    <i class="fa-solid fa-plane mr-2"></i>Flights
+                </button>
+                <button class="tab-button flex-1 text-center py-4 px-2 text-gray-600 hover:bg-gray-100 rounded-t-lg transition-colors duration-300 font-semibold text-lg" data-tab="hotels">
+                    <i class="fa-solid fa-hotel mr-2"></i>Hotels
+                </button>
+                <button class="tab-button flex-1 text-center py-4 px-2 text-gray-600 hover:bg-gray-100 rounded-t-lg transition-colors duration-300 font-semibold text-lg active-tab">
+                    <i class="fa-solid fa-map-marked-alt mr-2"></i>Tours
+                </button>
+            </div>
+            <!-- Tab Content -->
+            <div id="tab-content" class="p-6">
+                <!-- Tours Tab (Default active) -->
+                <div id="tours-tab" class="tab-pane">
+                    <h2 class="text-gray-700 text-2xl font-bold mb-4">Find Your Perfect Tour</h2>
+                    <form id="tours-search-form" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        <div class="col-span-1 md:col-span-2">
+                            <label for="tour-destination" class="block text-sm font-medium text-gray-700">Destination</label>
+                            <input type="text" id="tour-destination" placeholder="E.g., Paris, Tokyo..." class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900">
+                        </div>
+                        <div>
+                            <label for="tour-date" class="block text-sm font-medium text-gray-700">Date</label>
+                            <input type="date" id="tour-date" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900">
+                        </div>
+                        <button type="button" id="search-tours-button" class="w-full bg-indigo-600 text-white font-medium py-3 rounded-md hover:bg-indigo-700 transition-colors duration-300 shadow-lg">
+                            Search Tours
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Search Results Section -->
+    <section id="search-results-section" class="container mx-auto px-4 py-16 hidden">
+        <h2 id="results-title" class="text-3xl font-bold text-center text-gray-900">Search Results</h2>
+        <p id="results-subtitle" class="mt-4 text-center text-gray-600 max-w-2xl mx-auto"></p>
+        <div id="results-container" class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Results will be dynamically inserted here -->
+        </div>
+    </section>
+
+    <!-- Popular Destinations Section -->
+    <section id="popular-destinations" class="container mx-auto px-4 py-16">
+        <h2 class="text-3xl font-bold text-center text-gray-900">Popular Destinations</h2>
+        <p class="mt-4 text-center text-gray-600 max-w-2xl mx-auto">
+            Explore our most sought-after destinations and get ready for an unforgettable journey.
+        </p>
+
+        <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Destination Card 1 -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105">
+                <div class="destination-card-img">
+                    <img src="https://images.unsplash.com/photo-1549440621-3a05f136d814?q=80&w=2670&auto=format&fit=crop" alt="Paris, France" onerror="this.onerror=null;this.src='https://placehold.co/800x600/E5E7EB/4B5563?text=Paris'">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900">Paris, France</h3>
+                    <p class="mt-2 text-gray-600">
+                        Experience the city of love with its iconic landmarks and romantic charm.
+                    </p>
+                    <a href="#" class="mt-4 inline-block text-indigo-600 font-medium hover:underline">
+                        Learn More <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Destination Card 2 -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105">
+                <div class="destination-card-img">
+                    <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=2574&auto=format&fit=crop" alt="Tokyo, Japan" onerror="this.onerror=null;this.src='https://placehold.co/800x600/E5E7EB/4B5563?text=Tokyo'">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900">Tokyo, Japan</h3>
+                    <p class="mt-2 text-gray-600">
+                        Dive into the vibrant culture of Tokyo, a blend of tradition and modernity.
+                    </p>
+                    <a href="#" class="mt-4 inline-block text-indigo-600 font-medium hover:underline">
+                        Learn More <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Destination Card 3 -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105">
+                <div class="destination-card-img">
+                    <img src="https://images.unsplash.com/photo-1517430816045-93c7d620d433?q=80&w=2670&auto=format&fit=crop" alt="Bora Bora, French Polynesia" onerror="this.onerror=null;this.src='https://placehold.co/800x600/E5E7EB/4B5563?text=Bora+Bora'">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900">Bora Bora</h3>
+                    <p class="mt-2 text-gray-600">
+                        Relax in paradise with turquoise waters and luxurious overwater bungalows.
+                    </p>
+                    <a href="#" class="mt-4 inline-block text-indigo-600 font-medium hover:underline">
+                        Learn More <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section id="why-choose-us" class="bg-indigo-50 py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center text-gray-900">Why Choose Us?</h2>
+            <p class="mt-4 text-center text-gray-600 max-w-2xl mx-auto">
+                We're committed to making your travel experience seamless and unforgettable.
+            </p>
+
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="bg-white p-8 rounded-xl shadow-lg transform transition-transform duration-300 hover:scale-105">
+                    <i class="fa-solid fa-shield-halved text-5xl text-indigo-600 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-900">Best Price Guarantee</h3>
+                    <p class="mt-2 text-gray-600">
+                        Find the best deals on flights, hotels, and tours, guaranteed.
+                    </p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg transform transition-transform duration-300 hover:scale-105">
+                    <i class="fa-solid fa-headset text-5xl text-indigo-600 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-900">24/7 Customer Support</h3>
+                    <p class="mt-2 text-gray-600">
+                        Our team is available around the clock to assist you with any issues.
+                    </p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg transform transition-transform duration-300 hover:scale-105">
+                    <i class="fa-solid fa-globe-americas text-5xl text-indigo-600 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-900">Endless Destinations</h3>
+                    <p class="mt-2 text-gray-600">
+                        Explore thousands of destinations and unique travel experiences worldwide.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact-info" class="bg-gray-800 text-gray-300 py-12">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About Us -->
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4">Wanderlust</h3>
+                <p>
+                    Your gateway to the world's most beautiful and exciting destinations. Let us plan your next adventure.
+                </p>
+                <div class="mt-4 flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white transition-colors duration-300">Home</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors duration-300">Destinations</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors duration-300">Tours</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors duration-300">Blog</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact Info -->
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4">Contact Us</h3>
+                <ul class="space-y-2">
+                    <li><i class="fa-solid fa-map-marker-alt mr-2"></i> 123 Travel Lane, Adventure City</li>
+                    <li><i class="fa-solid fa-phone mr-2"></i> +1 (555) 123-4567</li>
+                    <li><i class="fa-solid fa-envelope mr-2"></i> info@wanderlust.com</li>
+                </ul>
+            </div>
+
+            <!-- Newsletter -->
+            <div>
+                <h3 class="text-xl font-bold text-white mb-4">Newsletter</h3>
+                <p>
+                    Stay up to date with our latest deals and travel tips.
+                </p>
+                <form class="mt-4 flex">
+                    <input type="email" placeholder="Your email address" class="w-full p-2 rounded-l-md bg-gray-700 border border-gray-600 focus:outline-none text-gray-900">
+                    <button type="submit" class="bg-indigo-600 text-white p-2 rounded-r-md hover:bg-indigo-700 transition-colors duration-300">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="mt-8 text-center text-gray-500">
+            &copy; 2024 Wanderlust Adventures. All Rights Reserved.
+        </div>
+    </footer>
+
+    <!-- JavaScript for interactivity -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const navMenu = document.getElementById('nav-menu');
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContent = document.getElementById('tab-content');
+            
+            const confirmationModal = document.getElementById('confirmation-modal');
+            const closeConfirmationButton = document.getElementById('close-confirmation-button');
+
+            const bookingOptionsModal = document.getElementById('booking-options-modal');
+            const viewDetailsButton = document.getElementById('view-details-button');
+            const proceedToBookButton = document.getElementById('proceed-to-book-button');
+            const closeOptionsButton = document.getElementById('close-options-button');
+
+            const viewDetailsModal = document.getElementById('view-details-modal');
+            const detailsContent = document.getElementById('details-content');
+            const closeDetailsButton = document.getElementById('close-details-button');
+            const bookFromDetailsButton = document.getElementById('book-from-details-button');
+
+            const bookNowButton = document.getElementById('book-now-button');
+            const searchResultsSection = document.getElementById('search-results-section');
+            const resultsContainer = document.getElementById('results-container');
+            
+            // This will hold the data of the currently selected item
+            let selectedItemData = null; 
+
+            // Add smooth scrolling to all anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Toggle mobile navigation menu
+            mobileMenuButton.addEventListener('click', () => {
+                navMenu.classList.toggle('hidden');
+            });
+
+            // Handle tab switching
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons and content
+                    tabButtons.forEach(btn => btn.classList.remove('bg-gray-100', 'text-indigo-600'));
+                    const activePane = tabContent.querySelector('.tab-pane');
+                    if (activePane) {
+                        activePane.remove();
+                    }
+                    // Hide search results when switching tabs
+                    searchResultsSection.classList.add('hidden');
+
+                    // Add active class to the clicked button
+                    button.classList.add('bg-gray-100', 'text-indigo-600');
+
+                    // Create and append new tab content
+                    const tabName = button.dataset.tab;
+                    let contentHTML = '';
+                    switch (tabName) {
+                        case 'flights':
+                            contentHTML = `
+                                <div id="flights-tab" class="tab-pane">
+                                    <h2 class="text-gray-700 text-2xl font-bold mb-4">Find Flights</h2>
+                                    <form id="flights-search-form" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                                        <div class="col-span-1 md:col-span-2">
+                                            <label for="flight-destination" class="block text-sm font-medium text-gray-700">Destination</label>
+                                            <input type="text" id="flight-destination" placeholder="E.g., London, New York..." class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900">
+                                        </div>
+                                        <div>
+                                            <label for="flight-date" class="block text-sm font-medium text-gray-700">Departure</label>
+                                            <input type="date" id="flight-date" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900">
+                                        </div>
+                                        <button type="button" id="search-flights-button" class="w-full bg-indigo-600 text-white font-medium py-3 rounded-md hover:bg-indigo-700 transition-colors duration-300 shadow-lg">
+                                            Search Flights
+                                        </button>
+                                    </form>
+                                </div>
+                            `;
+                            break;
+                        case 'hotels':
+                            contentHTML = `
+                                <div id="hotels-tab" class="tab-pane">
+                                    <h2 class="text-gray-700 text-2xl font-bold mb-4">Find Hotels</h2>
+                                    <form id="hotels-search-form" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                                        <div class="col-span-1 md:col-span-2">
+                                            <label for="hotel-destination" class="block text-sm font-medium text-gray-700">Destination</label>
+                                            <input type="text" id="hotel-destination" placeholder="E.g., Rome, Bali..." class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900">
+                                        </div>
+                                        <div>
+                                            <label for="hotel-date" class="block text-sm font-medium text-gray-700">Check-in</label>
+                                            <input type="date" id="hotel-date" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900">
+                                        </div>
+                                        <button type="button" id="search-hotels-button" class="w-full bg-indigo-600 text-white font-medium py-3 rounded-md hover:bg-indigo-700 transition-colors duration-300 shadow-lg">
+                                            Search Hotels
+                                        </button>
+                                    </form>
+                                </div>
+                            `;
+                            break;
+                        case 'tours':
+                        default:
+                            contentHTML = `
+                                <div id="tours-tab" class="tab-pane">
+                                    <h2 class="text-gray-700 text-2xl font-bold mb-4">Find Your Perfect Tour</h2>
+                                    <form id="tours-search-form" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                                        <div class="col-span-1 md:col-span-2">
+                                            <label for="tour-destination" class="block text-sm font-medium text-gray-700">Destination</label>
+                                            <input type="text" id="tour-destination" placeholder="E.g., Paris, Tokyo..." class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900">
+                                        </div>
+                                        <div>
+                                            <label for="tour-date" class="block text-sm font-medium text-gray-700">Date</label>
+                                            <input type="date" id="tour-date" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900">
+                                        </div>
+                                        <button type="button" id="search-tours-button" class="w-full bg-indigo-600 text-white font-medium py-3 rounded-md hover:bg-indigo-700 transition-colors duration-300 shadow-lg">
+                                            Search Tours
+                                        </button>
+                                    </form>
+                                </div>
+                            `;
+                            break;
+                    }
+                    tabContent.innerHTML = contentHTML;
+                    // Re-attach search button event listeners
+                    attachSearchEventListeners();
+                });
+            });
+
+            // Handles search button clicks
+            const handleSearch = (type) => {
+                let resultsHtml = '';
+                let title = '';
+                let subtitle = '';
+                const today = new Date().toLocaleDateString();
+
+                // Define dummy data for search results
+                let dummyResults = [];
+
+                switch (type) {
+                    case 'flights':
+                        title = 'Flights to Your Destination';
+                        subtitle = 'Browse the best flight options for your trip.';
+                        dummyResults = [{
+                            type: 'flight',
+                            name: 'Flight to Paris',
+                            airline: 'Air Wanderlust',
+                            price: '$750',
+                            details: `Departing from JFK on ${today}. Departure Time: 09:30 AM, Arrival Time: 06:15 PM. Non-stop flight with free in-flight meal and Wi-Fi.`,
+                            tour_img: `https://images.unsplash.com/photo-1542475094-1a92a543f458?q=80&w=2670&auto=format&fit=crop`
+                        }, {
+                            type: 'flight',
+                            name: 'Flight to Paris',
+                            airline: 'Global Express',
+                            price: '$820',
+                            details: `Departing from JFK on ${today}. Departure Time: 11:00 AM, Arrival Time: 08:00 PM. One layover in London.`,
+                            tour_img: `https://images.unsplash.com/photo-1506197603052-3ac93a311b17?q=80&w=2670&auto=format&fit=crop`
+                        }];
+                        break;
+                    case 'hotels':
+                        title = 'Hotels in Your Destination';
+                        subtitle = 'Find the perfect place to stay on your trip.';
+                        dummyResults = [{
+                            type: 'hotel',
+                            name: 'Luxury Grand Hotel',
+                            rating: '5 Stars',
+                            price: '$250/night',
+                            details: `Located in the heart of the city. Amenities include a rooftop pool, spa, and fine dining restaurant. Check-in from 3:00 PM.`,
+                            tour_img: `https://images.unsplash.com/photo-1618773959953-b3c95971489e?q=80&w=2670&auto=format&fit=crop`
+                        }, {
+                            type: 'hotel',
+                            name: 'Cozy Inn',
+                            rating: '4 Stars',
+                            price: '$120/night',
+                            details: `Charming and comfortable, close to main attractions. Free breakfast and complimentary shuttle service. Check-in from 2:00 PM.`,
+                            tour_img: `https://images.unsplash.com/photo-1582719478252-6178e50f4a77?q=80&w=2574&auto=format&fit=crop`
+                        }];
+                        break;
+                    case 'tours':
+                    default:
+                        title = 'Tours for Your Trip';
+                        subtitle = 'Discover exciting activities and unique experiences.';
+                        dummyResults = [{
+                            type: 'tour',
+                            name: 'City Highlights Tour',
+                            duration: '4 hours',
+                            price: '$80/person',
+                            details: `A comprehensive guided tour of the city's most famous landmarks, including a visit to the city museum and a river cruise.`,
+                            tour_img: `https://images.unsplash.com/photo-1506197603052-3ac93a311b17?q=80&w=2670&auto=format&fit=crop`
+                        }, {
+                            type: 'tour',
+                            name: 'Sunset Boat Cruise',
+                            duration: '2 hours',
+                            price: '$65/person',
+                            details: `Enjoy a scenic sunset boat cruise with complimentary appetizers and drinks. A perfect end to a perfect day.`,
+                            tour_img: `https://images.unsplash.com/photo-1506197603052-3ac93a311b17?q=80&w=2670&auto=format&fit=crop`
+                        }];
+                        break;
+                }
+
+                // Generate HTML for each result
+                resultsHtml = dummyResults.map((result, index) => `
+                    <div class="bg-white p-6 rounded-xl shadow-lg flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                        <div class="flex-shrink-0 text-indigo-600 text-4xl">
+                            <i class="fa-solid fa-${type === 'flights' ? 'plane' : type === 'hotels' ? 'hotel' : 'mountain-sun'}"></i>
+                        </div>
+                        <div class="flex-grow text-center sm:text-left">
+                            <h3 class="text-lg font-bold text-gray-900">${result.name}</h3>
+                            <p class="text-gray-600 mt-1">${result.type === 'flight' ? 'Airline: ' + result.airline : result.type === 'hotel' ? 'Rating: ' + result.rating : 'Duration: ' + result.duration} | Price: ${result.price}</p>
+                            <p class="text-sm text-gray-500 mt-1">${result.details.split('.')[0]}.</p>
+                        </div>
+                        <button class="select-result-button mt-4 sm:mt-0 px-4 py-2 bg-indigo-600 text-white font-medium rounded-full hover:bg-indigo-700 transition-colors duration-300" data-index="${index}" data-type="${type}">
+                            Select
+                        </button>
+                    </div>
+                `).join('');
+
+
+                document.getElementById('results-title').textContent = title;
+                document.getElementById('results-subtitle').textContent = subtitle;
+                resultsContainer.innerHTML = resultsHtml;
+                searchResultsSection.classList.remove('hidden');
+
+                // Scroll to the results section for better UX
+                searchResultsSection.scrollIntoView({ behavior: 'smooth' });
+
+                // Attach event listeners to the new "Select" buttons
+                document.querySelectorAll('.select-result-button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const index = button.dataset.index;
+                        const itemType = button.dataset.type;
+                        // Store the selected item data
+                        selectedItemData = dummyResults[index];
+                        selectedItemData.type = itemType;
+                        bookingOptionsModal.classList.remove('hidden');
+                    });
+                });
+            };
+            
+            // Function to attach event listeners to all search buttons
+            const attachSearchEventListeners = () => {
+                const searchFlightsButton = document.getElementById('search-flights-button');
+                const searchHotelsButton = document.getElementById('search-hotels-button');
+                const searchToursButton = document.getElementById('search-tours-button');
+
+                if (searchFlightsButton) {
+                    searchFlightsButton.addEventListener('click', () => handleSearch('flights'));
+                }
+                if (searchHotelsButton) {
+                    searchHotelsButton.addEventListener('click', () => handleSearch('hotels'));
+                }
+                if (searchToursButton) {
+                    searchToursButton.addEventListener('click', () => handleSearch('tours'));
+                }
+            };
+            
+            // Event listener for the "Book Now" button in the header
+            bookNowButton.addEventListener('click', () => {
+                // Scroll to the search form section
+                document.getElementById('search-form-container').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+
+            // Handle booking options
+            viewDetailsButton.addEventListener('click', () => {
+                // Close the options modal
+                bookingOptionsModal.classList.add('hidden');
+                
+                // Populate the details modal with selected item data
+                let detailsHtml = '';
+                if (selectedItemData) {
+                    const { name, price, details, type, airline, rating, duration, tour_img} = selectedItemData;
+                    
+                    detailsHtml = `
+                        <div class="mb-4">
+                            <img src="${tour_img}" alt="${name}" class="rounded-lg shadow-md mb-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/E5E7EB/4B5563?text=${name.replace(' ', '+')}';">
+                            <h4 class="text-xl font-bold text-gray-900">${name}</h4>
+                            <p class="text-sm text-gray-500">${type.charAt(0).toUpperCase() + type.slice(1)}</p>
+                        </div>
+                        <ul class="text-md text-gray-700 space-y-2">
+                            <li><strong>Price:</strong> ${price}</li>
+                            <li><strong>Details:</strong> ${details}</li>
+                            ${airline ? `<li><strong>Airline:</strong> ${airline}</li>` : ''}
+                            ${rating ? `<li><strong>Rating:</strong> ${rating}</li>` : ''}
+                            ${duration ? `<li><strong>Duration:</strong> ${duration}</li>` : ''}
+                        </ul>
+                        ${(type === 'hotel' || type === 'flights') ? `
+                            <div class="mt-4">
+                                <button class="w-full px-4 py-2 bg-gray-200 text-gray-800 rounded-md shadow-sm hover:bg-gray-300 transition-colors">
+                                    <i class="fa-solid fa-video mr-2"></i> Take a Room Tour
+                                </button>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    This is a placeholder for a future feature.
+                                </p>
+                            </div>` : ''}
+                    `;
+                } else {
+                    detailsHtml = '<p class="text-md text-gray-500">No details available.</p>';
+                }
+
+                detailsContent.innerHTML = detailsHtml;
+                viewDetailsModal.classList.remove('hidden');
+            });
+            
+            // "Book Now" from the options modal
+            proceedToBookButton.addEventListener('click', () => {
+                bookingOptionsModal.classList.add('hidden');
+                confirmationModal.classList.remove('hidden');
+            });
+
+            // "Book Now" from the details modal
+            bookFromDetailsButton.addEventListener('click', () => {
+                viewDetailsModal.classList.add('hidden');
+                confirmationModal.classList.remove('hidden');
+            });
+
+
+            // Close all modals
+            closeConfirmationButton.addEventListener('click', () => {
+                confirmationModal.classList.add('hidden');
+            });
+            closeOptionsButton.addEventListener('click', () => {
+                bookingOptionsModal.classList.add('hidden');
+            });
+            closeDetailsButton.addEventListener('click', () => {
+                viewDetailsModal.classList.add('hidden');
+            });
+            
+            // Set the initial active tab
+            const initialTabButton = document.querySelector('.tab-button[data-tab="tours"]');
+            if (initialTabButton) {
+                initialTabButton.classList.add('bg-gray-100', 'text-indigo-600');
+            }
+
+            // Initial call to attach listeners after the page loads
+            attachSearchEventListeners();
+        });
+    </script>
+</body>
+</html>
