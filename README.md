@@ -74,17 +74,10 @@ git push -u origin main
 
 ---
 
-## 📝 Interview Prep Questions
-
-1. What is GitHub Pages?
-2. Can you host dynamic applications here?
-3. What are the limits of GitHub Pages?
-4. How do you update the website?
-5. What happens when you delete the repo?
-6. What is the default file that loads?
-7. Can you use a custom domain?
+https://nithishmathematics.github.io/static-website/
 
 ---
+
 
 
 
